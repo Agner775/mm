@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administración | Electrocredit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css"><script type="module" src="admin.js"></script>
+</head><body class="admin-body">
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">E</span><span>Electro<span class="brand-accent">credit</span></span></a><a class="header-cta" href="index.html">Ver tienda ↗</a></header>
+<main class="admin-shell">
+  <section class="admin-login" id="loginPanel">
+    <div class="admin-kicker">ELECTROCREDIT / ADMINISTRACIÓN</div><h1>Bienvenido de nuevo<span>.</span></h1>
+    <p>Inicia sesión para administrar el catálogo de tu tienda.</p>
+    <form id="loginForm" class="admin-form">
+      <label>Correo electrónico<input type="email" id="loginEmail" autocomplete="username" required placeholder="tu-correo@ejemplo.com"></label>
+      <label>Contraseña<input type="password" id="loginPassword" autocomplete="current-password" required placeholder="Tu contraseña"></label>
+      <button class="primary-button" type="submit">Iniciar sesión <span>→</span></button>
+      <p class="admin-message" id="loginMessage" role="status"></p>
+    </form>
+  </section>
+  <section id="dashboard" hidden>
+    <div class="admin-topline"><div><div class="admin-kicker">PANEL DE CONTROL</div><h1>Administrar productos<span>.</span></h1><p>Agrega, edita y publica los productos de tu tienda.</p></div><button id="logoutButton" class="outline-button">Cerrar sesión</button></div>
+    <div class="admin-stats"><div><span>Productos registrados</span><strong id="productTotal">0</strong></div><div><span>Productos publicados</span><strong id="publishedTotal">0</strong></div></div>
+    <div class="admin-toolbar"><input type="search" id="adminSearch" placeholder="Buscar en tus productos..."><button class="primary-button" id="newProductButton" type="button">+ Agregar producto</button></div>
+    <div class="admin-product-list" id="adminProductList"></div>
+    <section class="editor-card" id="editorCard" hidden>
+      <div class="editor-heading"><div><div class="admin-kicker">CATÁLOGO</div><h2 id="editorTitle">Agregar producto</h2></div><button id="cancelEdit" class="outline-button" type="button">Cancelar</button></div>
+      <form id="productForm" class="admin-form product-editor">
+        <input type="hidden" id="productId">
+        <div class="form-grid">
+          <label>Nombre del producto *<input id="productName" required maxlength="120" placeholder="Ej. Refrigeradora No Frost"></label>
+          <label>Marca<input id="productBrand" maxlength="80" placeholder="Ej. Mabe"></label>
+          <label>Categoría *<input id="productCategory" required list="categoryOptions" placeholder="Ej. Refrigeración"><datalist id="categoryOptions"></datalist></label>
+          <label>Precio (C$) *<input id="productPrice" type="number" min="0" step="0.01" required placeholder="28999"></label>
+          <label>Precio anterior (opcional)<input id="productOldPrice" type="number" min="0" step="0.01" placeholder="31999"></label>
+          <label>Etiqueta (opcional)<input id="productBadge" maxlength="30" placeholder="Oferta / Nuevo / Más vendido"></label>
+        </div>
+        <label>Descripción<textarea id="productDescription" rows="3" placeholder="Describe el producto..."></textarea></label>
+        <label>Características (una por línea)<textarea id="productFeatures" rows="4" placeholder="Pantalla 4K UHD&#10;Conexión Wi-Fi&#10;Garantía"></textarea></label>
+        <label>Fotografías del producto <span class="field-hint">Puedes seleccionar varias imágenes. Las imágenes nuevas se añadirán a la galería.</span><input id="productImages" type="file" accept="image/*" multiple></label>
+        <div id="currentImages" class="image-preview-row"></div>
+        <label class="publish-toggle"><input id="productActive" type="checkbox" checked> Publicar este producto en la tienda</label>
+        <p class="admin-message" id="saveMessage" role="status"></p>
+        <div class="editor-actions"><button class="primary-button" type="submit" id="saveProductButton">Guardar producto <span>→</span></button><button class="outline-button" type="button" id="cancelEditBottom">Cancelar</button></div>
+      </form>
+    </section>
+  </section>
+</main>
+<footer class="admin-footer">© <span id="year"></span> Electrocredit · Panel privado de administración</footer>
+</body></html>
