@@ -39,7 +39,7 @@ async function loadProduct() {
         <label for="financeMonths">Plazo (meses)</label><select id="financeMonths"><option value="3">3 meses</option><option value="6" selected>6 meses</option><option value="9">9 meses</option><option value="12">12 meses</option></select>
         <label for="financeFrequency">Frecuencia de pago</label><select id="financeFrequency"><option value="weekly">Semanal</option><option value="biweekly">Quincenal</option><option value="monthly" selected>Mensual</option></select>
       </div>
-      <div class="finance-results" aria-live="polite"><div><span>Saldo financiado</span><strong id="financeBalance"></strong></div><div><span>Interés total (5% mensual simple)</span><strong id="financeInterest"></strong></div><div class="finance-total"><span>Total a pagar en cuotas</span><strong id="financeTotal"></strong></div><div class="finance-installment"><span id="financeInstallmentLabel">Cuota mensual estimada</span><strong id="financeInstallment"></strong></div></div>
+      <div class="finance-results" aria-live="polite"><div class="finance-total"><span>Total a pagar en cuotas</span><strong id="financeTotal"></strong></div><div class="finance-installment"><span id="financeInstallmentLabel">Cuota mensual estimada</span><strong id="financeInstallment"></strong></div></div>
       <p class="finance-disclaimer">Prima mínima: C$ 1,000. Plazo máximo: 12 meses. Estimación referencial: el 5% mensual se calcula sobre el precio de contado; después se resta la prima. Para estimar pagos semanales se consideran 4 semanas por mes y quincenales 2 pagos por mes. La aprobación, fechas, redondeos y condiciones finales deben ser confirmados por Electrocredit.</p>
       <a id="financeWhatsapp" class="whatsapp-button finance-whatsapp" href="#" target="_blank" rel="noopener">Solicitar este financiamiento por WhatsApp</a>
     </section>
@@ -53,15 +53,13 @@ async function loadProduct() {
   const calculate=()=>{
     const price=Number(p.price)||0, minimumDown=1000, down=Math.min(price,Math.max(minimumDown,Number(downInput.value)||minimumDown));
     downInput.min=String(minimumDown);
-    if(price < minimumDown){ downInput.disabled=true; document.getElementById("financeWhatsapp").setAttribute("aria-disabled","true"); document.getElementById("financeBalance").textContent="No disponible"; document.getElementById("financeInterest").textContent=""; document.getElementById("financeTotal").textContent=""; document.getElementById("financeInstallment").textContent=""; document.getElementById("financeWhatsapp").href="#"; return; }
+    if(price < minimumDown){ downInput.disabled=true; document.getElementById("financeWhatsapp").setAttribute("aria-disabled","true"); document.getElementById("financeTotal").textContent=""; document.getElementById("financeInstallment").textContent=""; document.getElementById("financeWhatsapp").href="#"; return; }
     downInput.disabled=false; document.getElementById("financeWhatsapp").removeAttribute("aria-disabled");
     const months=Number(monthsInput.value), freq=freqInput.value;
     const principal=price-down, interest=price*0.05*months, total=Math.max(0,price+interest-down);
     const paymentsPerMonth=freq==="weekly"?4:freq==="biweekly"?2:1;
     const count=months*paymentsPerMonth, installment=count?total/count:0;
     const label=freq==="weekly"?"Cuota semanal estimada":freq==="biweekly"?"Cuota quincenal estimada":"Cuota mensual estimada";
-    document.getElementById("financeBalance").textContent=money(principal);
-    document.getElementById("financeInterest").textContent=money(interest);
     document.getElementById("financeTotal").textContent=money(total);
     document.getElementById("financeInstallmentLabel").textContent=`${label} (${count} pagos)`;
     document.getElementById("financeInstallment").textContent=money(installment);
