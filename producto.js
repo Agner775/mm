@@ -63,7 +63,7 @@ async function loadProduct() {
     document.getElementById("financeTotal").textContent=money(total);
     document.getElementById("financeInstallmentLabel").textContent=`${label} (${count} pagos)`;
     document.getElementById("financeInstallment").textContent=money(installment);
-    const msg=["¡Hola, Electrocredit! Quiero solicitar información sobre financiamiento:",`Producto: ${p.name}`,p.brand?`Marca: ${p.brand}`:null,`Precio de contado: ${money(price)}`,`Prima inicial: ${money(down)}`,`Saldo financiado: ${money(principal)}`,`Plazo: ${months} meses`,`Frecuencia: ${freq==="weekly"?"semanal":freq==="biweekly"?"quincenal":"mensual"}`,"Interés simple: 5% mensual sobre el precio de contado",`Interés estimado: ${money(interest)}`,`Total estimado en cuotas: ${money(total)}`,`Cuota estimada: ${money(installment)} (${count} pagos)`,`Producto: ${location.origin}/producto.html?id=${encodeURIComponent(p.id)}`,"Deseo confirmar requisitos y aprobación."] .filter(Boolean).join("\n");
+    const msg=["¡Hola, Electrocredit! Quiero solicitar información sobre financiamiento:",`Producto: ${p.name}`,p.brand?`Marca: ${p.brand}`:null,`Precio de contado: ${money(price)}`,`Prima inicial: ${money(down)}`,`Plazo: ${months} meses`,`Frecuencia: ${freq==="weekly"?"semanal":freq==="biweekly"?"quincenal":"mensual"}`,`Total estimado en cuotas: ${money(total)}`,`Cuota estimada: ${money(installment)} (${count} pagos)`,`Producto: ${location.origin}/producto.html?id=${encodeURIComponent(p.id)}`,"Deseo confirmar requisitos y aprobación."] .filter(Boolean).join("\n");
     document.getElementById("financeWhatsapp").href=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
   };
   [downInput,monthsInput,freqInput].forEach(el=>el.addEventListener("input",calculate));
