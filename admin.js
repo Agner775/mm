@@ -73,7 +73,7 @@ function editProduct(id){
   const p=products.find(x=>x.id===id); if(!p)return;
   $("productId").value=p.id;$("productName").value=p.name;$("productBrand").value=p.brand||"";
   $("productCategory").value=p.category;$("productPrice").value=p.price;$("productOldPrice").value=p.old_price??"";
-  $("productBadge").value=p.badge||"";$("productDescription").value=p.description||"";
+  $("productBadge").value=p.badge||"";$("promoStart").value=p.promo_start||"";$("promoEnd").value=p.promo_end||"";$("interestFreeMonths").value=p.interest_free_months||"";$("interestFreeStart").value=p.interest_free_start||"";$("interestFreeEnd").value=p.interest_free_end||"";$("productDescription").value=p.description||"";
   $("productFeatures").value=(p.features||[]).join("\n");$("productActive").checked=p.is_active;
   existingImages=[...(p.images||[])];renderImagePreviews();$("editorTitle").textContent="Editar producto";openEditor();
 }
@@ -101,11 +101,15 @@ $("productForm").addEventListener("submit",async e=>{
   const button=$("saveProductButton");button.disabled=true;button.textContent="Guardando...";
   try{
     const images=await uploadSelectedImages();
+    if($("promoStart").value && $("promoEnd").value && $("promoEnd").value < $("promoStart").value) throw new Error("La fecha final de la promoción no puede ser anterior a la fecha de inicio.");
+    if($("productOldPrice").value && Number($("productOldPrice").value) <= Number($("productPrice").value)) throw new Error("Para una oferta, el precio normal debe ser mayor que el precio de oferta.");
+    if($("interestFreeStart").value && $("interestFreeEnd").value && $("interestFreeEnd").value < $("interestFreeStart").value) throw new Error("La fecha final de meses sin intereses no puede ser anterior a la fecha de inicio.");
     const payload={
       name:$("productName").value.trim(),brand:$("productBrand").value.trim(),
       category:$("productCategory").value.trim(),price:Number($("productPrice").value),
       old_price:$("productOldPrice").value?Number($("productOldPrice").value):null,
-      badge:$("productBadge").value.trim(),description:$("productDescription").value.trim(),
+      badge:$("productBadge").value.trim(),promo_start:$("promoStart").value||null,promo_end:$("promoEnd").value||null,
+      interest_free_months:$("interestFreeMonths").value?Number($("interestFreeMonths").value):null,interest_free_start:$("interestFreeStart").value||null,interest_free_end:$("interestFreeEnd").value||null,description:$("productDescription").value.trim(),
       features:$("productFeatures").value.split("\n").map(s=>s.trim()).filter(Boolean),
       images,is_active:$("productActive").checked
     };

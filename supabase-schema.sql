@@ -25,6 +25,9 @@ create table if not exists public.products (
   updated_at timestamptz not null default now()
 );
 
+alter table public.products add column if not exists promo_start date;
+alter table public.products add column if not exists promo_end date;
+
 create or replace function public.is_electrocredit_admin()
 returns boolean
 language sql

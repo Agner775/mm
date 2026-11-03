@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css"><script type="module" src="admin.js"></script>
 </head><body class="admin-body">
-<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">E</span><span>Electro<span class="brand-accent">credit</span></span></a><a class="header-cta" href="index.html">Ver tienda ↗</a></header>
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">EC</span><span>Electro<span class="brand-accent">Credit</span></span></a><a class="header-cta" href="index.html">Ver tienda ↗</a></header>
 <main class="admin-shell">
   <section class="admin-login" id="loginPanel">
     <div class="admin-kicker">ELECTROCREDIT / ADMINISTRACIÓN</div><h1>Bienvenido de nuevo<span>.</span></h1>
@@ -31,9 +31,14 @@
           <label>Nombre del producto *<input id="productName" required maxlength="120" placeholder="Ej. Refrigeradora No Frost"></label>
           <label>Marca<input id="productBrand" maxlength="80" placeholder="Ej. Mabe"></label>
           <label>Categoría *<input id="productCategory" required list="categoryOptions" placeholder="Ej. Refrigeración"><datalist id="categoryOptions"></datalist></label>
-          <label>Precio (C$) *<input id="productPrice" type="number" min="0" step="0.01" required placeholder="28999"></label>
-          <label>Precio anterior (opcional)<input id="productOldPrice" type="number" min="0" step="0.01" placeholder="31999"></label>
-          <label>Etiqueta (opcional)<input id="productBadge" maxlength="30" placeholder="Oferta / Nuevo / Más vendido"></label>
+          <label>Precio de venta / oferta (C$) *<input id="productPrice" type="number" min="0" step="0.01" required placeholder="28999"></label>
+          <label>Precio normal (opcional)<input id="productOldPrice" type="number" min="0" step="0.01" placeholder="31999"></label>
+          <label>Etiqueta (opcional)<input id="productBadge" maxlength="30" placeholder="OFERTA / PROMOCIÓN / NUEVO"></label>
+          <label>Inicio de promoción (opcional)<input id="promoStart" type="date"></label>
+          <label>Fin de promoción (opcional)<input id="promoEnd" type="date"></label>
+          <label>Meses sin intereses<select id="interestFreeMonths"><option value="">No aplicar</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="9">9 meses</option><option value="12">12 meses</option></select></label>
+          <label>Inicio meses sin intereses (opcional)<input id="interestFreeStart" type="date"></label>
+          <label>Fin meses sin intereses (opcional)<input id="interestFreeEnd" type="date"></label>
         </div>
         <label>Descripción<textarea id="productDescription" rows="3" placeholder="Describe el producto..."></textarea></label>
         <label>Características (una por línea)<textarea id="productFeatures" rows="4" placeholder="Pantalla 4K UHD&#10;Conexión Wi-Fi&#10;Garantía"></textarea></label>
