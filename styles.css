@@ -560,3 +560,26 @@
 
 /* EC-8: recuperar el fondo original de la portada, sin cambiar el resto de la paleta. */
 .hero { background: #f7f8f4; }
+
+/* EC-9: tarjetas y galeria con fotos naturales, y calculadora legible. */
+.product-card{border-color:#d8e5f5;background:#fff}
+.product-card:hover{border-color:#78a9e3}
+.product-image-wrap,.detail-main-image,.thumbnail{background:#f5f8fc}
+.product-image-wrap img,.detail-main-image img,.thumbnail img{mix-blend-mode:normal;filter:none}
+.product-image-wrap img{object-fit:contain}
+.product-badge{background:#dcecff;color:#103d78}
+.promo-card{outline:1px solid #c9dcf3}
+.promo-detail-note{background:#e3efff;color:#174f94;border:1px solid #c8ddf7}
+.finance-card{background:#edf5ff;border:1px solid #cbdff6;box-shadow:0 12px 32px rgba(15,61,117,.08)}
+.finance-kicker{color:#1762b5}
+.finance-heading h2{color:#102d54}
+.finance-heading p,.finance-fields label,.finance-disclaimer{color:#263b56}
+.finance-fields input,.finance-fields select{border-color:#bdd2ec;color:#263b56;background:#fff}
+.finance-fields input:focus,.finance-fields select:focus{outline:2px solid #86b6ef;outline-offset:1px}
+.finance-results{background:#fff;border-color:#d4e2f3}
+.finance-results>div{color:#243a55}
+.finance-results strong{color:#102d54}
+.finance-results .finance-total{border-top-color:#d4e2f3}
+.finance-results .finance-installment{background:#e1efff;color:#164c8c}
+.finance-results .finance-installment strong{color:#0d4da0}
+.finance-whatsapp{background:#1762b5;color:#fff}
