@@ -583,3 +583,33 @@
 .finance-results .finance-installment{background:#e1efff;color:#164c8c}
 .finance-results .finance-installment strong{color:#0d4da0}
 .finance-whatsapp{background:#1762b5;color:#fff}
+
+/* EC-10: estados de inventario */
+.stock-label{display:inline-flex;align-items:center;width:fit-content;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:800;line-height:1.4;margin:8px 0;color:#174f94;background:#e8f2ff;border:1px solid #c6dcfa}
+.stock-ok{color:#14548d;background:#e8f3ff;border-color:#bed9f5}
+.stock-low{color:#865000;background:#fff2d5;border-color:#f0d49b}
+.stock-out{color:#a12735;background:#fff0f0;border-color:#f0c3ca}
+.detail-stock{font-size:14px;margin:12px 0}
+.admin-product-copy .stock-label{margin:5px 0}
+
+/* EC-11: panel privado de inventario */
+.inventory-dashboard{margin:22px 0 26px}
+.inventory-heading h2{font-size:20px;letter-spacing:-.4px;margin:0 0 5px;color:#fff}
+.inventory-heading p{font-size:12px;color:#dce9ff;margin:0 0 14px;line-height:1.6}
+.inventory-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.inventory-summary-card{background:#fff;border:1px solid #cbdcf4;border-radius:10px;padding:20px;display:grid;grid-template-columns:12px 1fr;align-items:center;gap:8px 10px;box-shadow:0 8px 24px #001a3b16}
+.inventory-summary-card span:not(.inventory-dot){font-size:12px;font-weight:700;color:#17375c}
+.inventory-summary-card strong{grid-column:2;font-size:30px;color:#092e65;line-height:1.1}
+.inventory-dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.inventory-dot.available{background:#2170bd}.inventory-dot.low{background:#e8a32c}.inventory-dot.out{background:#d42c38}
+@media(max-width:600px){.inventory-summary{gap:8px}.inventory-summary-card{padding:13px 9px;gap:7px 5px;grid-template-columns:9px 1fr}.inventory-summary-card span:not(.inventory-dot){font-size:10px}.inventory-summary-card strong{font-size:25px}}
+
+/* EC-12: Productos destacados */
+.featured-section{padding-top:55px;padding-bottom:55px;background:#f0f6ff}
+.featured-section[hidden]{display:none!important}
+.featured-section .section-heading{margin-bottom:24px}
+.featured-badge{position:absolute;z-index:4;right:10px;bottom:10px;background:#1762b5;color:#fff;font-size:10px;font-weight:800;letter-spacing:.5px;padding:7px 10px;border-radius:7px;box-shadow:0 3px 12px #123c7033}
+.featured-see-all{display:block;margin:24px auto 0;border:1px solid #1762b5;background:white;color:#164b89;padding:12px 20px;border-radius:8px;font-weight:800;cursor:pointer}
+.featured-see-all:hover{background:#e1efff}
+.admin-featured-mark,.featured-detail-mark{display:inline-block;background:#e2efff;color:#14518d;border:1px solid #b7d4f6;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:800;margin:5px 0}
+@media(max-width:650px){.featured-section{padding-top:35px;padding-bottom:35px}}

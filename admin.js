@@ -43,6 +43,11 @@ async function loadProducts(){
   products=data||[];
   $("productTotal").textContent=products.length;
   $("publishedTotal").textContent=products.filter(p=>p.is_active).length;
+  // Contadores de productos (no de unidades), incluyendo productos ocultos.
+  const quantity=p=>Number(p.stock_quantity??0);
+  $("inventoryAvailable").textContent=products.filter(p=>quantity(p)>3).length;
+  $("inventoryLow").textContent=products.filter(p=>quantity(p)>0&&quantity(p)<=3).length;
+  $("inventoryOut").textContent=products.filter(p=>quantity(p)<=0).length;
   const cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
   $("categoryOptions").innerHTML=cats.map(c=>`<option value="${escapeHtml(c)}">`).join("");
   renderList();
@@ -53,7 +58,7 @@ function renderList(){
   $("adminProductList").innerHTML=filtered.length?filtered.map(p=>`
     <article class="admin-product-row">
       <img src="${escapeHtml(p.images?.[0]||"https://placehold.co/120x100?text=Producto")}" alt="">
-      <div class="admin-product-copy"><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(p.category)} · ${escapeHtml(p.brand||"Sin marca")}</span><b>${money(p.price)}</b></div>
+      <div class="admin-product-copy"><strong>${escapeHtml(p.name)}</strong>${p.is_featured?`<span class="admin-featured-mark">★ Destacado</span>`:""}<span>${escapeHtml(p.category)} · ${escapeHtml(p.brand||"Sin marca")}</span><b>${money(p.price)}</b><span class="stock-label ${Number(p.stock_quantity)===0?"stock-out":Number(p.stock_quantity)<=3?"stock-low":"stock-ok"}">${Number(p.stock_quantity)===0?"Agotado":Number(p.stock_quantity)<=3?`Últimas unidades (${p.stock_quantity})`:`Disponible (${p.stock_quantity})`}</span></div>
       <span class="status-pill ${p.is_active?"published":"draft"}">${p.is_active?"Publicado":"Oculto"}</span>
       <button class="small-action" data-edit="${p.id}" type="button">Editar</button>
       <button class="small-action delete-action" data-delete="${p.id}" type="button">Eliminar</button>
@@ -64,7 +69,7 @@ function renderList(){
 $("adminSearch").addEventListener("input",renderList);
 
 function openEditor(){ $("editorCard").hidden=false; $("editorCard").scrollIntoView({behavior:"smooth",block:"start"}); }
-function closeEditor(){ $("editorCard").hidden=true; $("productForm").reset(); $("productId").value=""; existingImages=[]; $("currentImages").innerHTML=""; message("saveMessage",""); $("editorTitle").textContent="Agregar producto"; }
+function closeEditor(){ $("editorCard").hidden=true; $("productForm").reset(); $("productId").value=""; $("productFeatured").checked=false; existingImages=[]; $("currentImages").innerHTML=""; message("saveMessage",""); $("editorTitle").textContent="Agregar producto"; }
 $("newProductButton").addEventListener("click",()=>{closeEditor();openEditor();});
 $("cancelEdit").addEventListener("click",closeEditor);
 $("cancelEditBottom").addEventListener("click",closeEditor);
@@ -72,9 +77,9 @@ $("cancelEditBottom").addEventListener("click",closeEditor);
 function editProduct(id){
   const p=products.find(x=>x.id===id); if(!p)return;
   $("productId").value=p.id;$("productName").value=p.name;$("productBrand").value=p.brand||"";
-  $("productCategory").value=p.category;$("productPrice").value=p.price;$("productOldPrice").value=p.old_price??"";
+  $("productCategory").value=p.category;$("productPrice").value=p.price;$("productStock").value=p.stock_quantity??0;$("productOldPrice").value=p.old_price??"";
   $("productBadge").value=p.badge||"";$("promoStart").value=p.promo_start||"";$("promoEnd").value=p.promo_end||"";$("interestFreeMonths").value=p.interest_free_months||"";$("interestFreeStart").value=p.interest_free_start||"";$("interestFreeEnd").value=p.interest_free_end||"";$("productDescription").value=p.description||"";
-  $("productFeatures").value=(p.features||[]).join("\n");$("productActive").checked=p.is_active;
+  $("productFeatures").value=(p.features||[]).join("\n");$("productFeatured").checked=!!p.is_featured;$("productActive").checked=p.is_active;
   existingImages=[...(p.images||[])];renderImagePreviews();$("editorTitle").textContent="Editar producto";openEditor();
 }
 function renderImagePreviews(){
@@ -100,6 +105,7 @@ $("productForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const button=$("saveProductButton");button.disabled=true;button.textContent="Guardando...";
   try{
+    if (!Number.isInteger(Number($("productStock").value)) || Number($("productStock").value)<0) throw new Error("Ingresa una cantidad válida de unidades disponibles.");
     const images=await uploadSelectedImages();
     if($("promoStart").value && $("promoEnd").value && $("promoEnd").value < $("promoStart").value) throw new Error("La fecha final de la promoción no puede ser anterior a la fecha de inicio.");
     if($("productOldPrice").value && Number($("productOldPrice").value) <= Number($("productPrice").value)) throw new Error("Para una oferta, el precio normal debe ser mayor que el precio de oferta.");
@@ -107,11 +113,12 @@ $("productForm").addEventListener("submit",async e=>{
     const payload={
       name:$("productName").value.trim(),brand:$("productBrand").value.trim(),
       category:$("productCategory").value.trim(),price:Number($("productPrice").value),
+      stock_quantity:Number($("productStock").value),
       old_price:$("productOldPrice").value?Number($("productOldPrice").value):null,
       badge:$("productBadge").value.trim(),promo_start:$("promoStart").value||null,promo_end:$("promoEnd").value||null,
       interest_free_months:$("interestFreeMonths").value?Number($("interestFreeMonths").value):null,interest_free_start:$("interestFreeStart").value||null,interest_free_end:$("interestFreeEnd").value||null,description:$("productDescription").value.trim(),
       features:$("productFeatures").value.split("\n").map(s=>s.trim()).filter(Boolean),
-      images,is_active:$("productActive").checked
+      images,is_featured:$("productFeatured").checked,is_active:$("productActive").checked
     };
     const id=$("productId").value;
     const result=id?await supabase.from("products").update(payload).eq("id",id):await supabase.from("products").insert(payload);

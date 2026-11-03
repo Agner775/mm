@@ -47,6 +47,7 @@ async function loadProducts() {
     }
   }
   renderProducts();
+  renderFeatured();
 }
 
 function escapeHtml(value="") {
@@ -56,31 +57,42 @@ function escapeHtml(value="") {
 function renderProducts() {
   const term = search.value.trim().toLocaleLowerCase("es");
   let visible = products.filter(p =>
-    (activeCategory === "Todos" || (activeCategory === "Ofertas" ? isPromoActive(p) : (activeCategory === "Meses sin intereses" ? interestFreeMonths(p) > 0 : p.category === activeCategory))) &&
+    (activeCategory === "Todos" || (activeCategory === "Ofertas" ? isPromoActive(p) : (activeCategory === "Meses sin intereses" ? interestFreeMonths(p) > 0 : (activeCategory === "Destacados" ? !!p.is_featured : p.category === activeCategory)))) &&
     [p.name,p.brand,p.category].join(" ").toLocaleLowerCase("es").includes(term)
   );
+  if (sort.value === "featured") visible.sort((a,b)=>Number(!!b.is_featured)-Number(!!a.is_featured));
   if (sort.value === "low") visible.sort((a,b)=>displayPrice(a)-displayPrice(b));
   if (sort.value === "high") visible.sort((a,b)=>displayPrice(b)-displayPrice(a));
   if (sort.value === "name") visible.sort((a,b)=>a.name.localeCompare(b.name,"es"));
-  grid.innerHTML = visible.map(p => {
-    const image = p.images?.[0] || "https://placehold.co/800x600/f2f5ef/176b53?text=Electrocredit";
-    const promo=isPromoActive(p), price=displayPrice(p), pct=discountPct(p), msi=interestFreeMonths(p);
-    const badge=msi ? `${msi} MESES SIN INTERESES` : (promo ? (p.badge || (pct ? `-${pct}%` : "OFERTA")) : p.badge);
-    return `<a class="product-card ${promo?"promo-card":""}" href="producto.html?id=${encodeURIComponent(p.id)}">
-      <div class="product-image-wrap">${badge ? `<span class="product-badge">${escapeHtml(badge)}</span>` : ""}
-        <img src="${escapeHtml(image)}" alt="${escapeHtml(p.name)}" loading="lazy"><span class="card-arrow">↗</span>
-      </div><div class="product-info"><span class="product-category">${escapeHtml(p.category || "Productos")}</span>
-        <h3>${escapeHtml(p.name)}</h3><div class="product-bottom"><div><span class="product-brand">${escapeHtml(p.brand || "")}</span>
-        <strong>${money(price)}</strong>${promo ? `<del>${money(p.old_price)}</del>` : ""}${promo && p.promo_end ? `<small class="promo-until">Hasta ${escapeHtml(p.promo_end)}</small>`:""}</div><span class="view-label">Ver detalle</span></div></div></a>`;
-  }).join("");
+  grid.innerHTML = visible.map(productCard).join("");
   count.textContent = `${visible.length} ${visible.length === 1 ? "producto encontrado" : "productos encontrados"}`;
   empty.hidden = visible.length !== 0;
   grid.hidden = visible.length === 0;
   renderCategories();
 }
 
+function productCard(p) {
+    const image = p.images?.[0] || "https://placehold.co/800x600/f2f5ef/176b53?text=Electrocredit";
+    const promo=isPromoActive(p), price=displayPrice(p), pct=discountPct(p), msi=interestFreeMonths(p);
+    const stock=Number(p.stock_quantity??0);
+    const stockText=stock===0?"Agotado":stock<=3?"Últimas unidades":"Disponible";
+    const badge=msi ? `${msi} MESES SIN INTERESES` : (promo ? (p.badge || (pct ? `-${pct}%` : "OFERTA")) : p.badge);
+    return `<a class="product-card ${promo?"promo-card":""}" href="producto.html?id=${encodeURIComponent(p.id)}">
+      <div class="product-image-wrap">${p.is_featured?`<span class="featured-badge">★ DESTACADO</span>`:""}${badge ? `<span class="product-badge">${escapeHtml(badge)}</span>` : ""}
+        <img src="${escapeHtml(image)}" alt="${escapeHtml(p.name)}" loading="lazy"><span class="card-arrow">↗</span>
+      </div><div class="product-info"><span class="product-category">${escapeHtml(p.category || "Productos")}</span>
+        <h3>${escapeHtml(p.name)}</h3><span class="stock-label ${stock===0?"stock-out":stock<=3?"stock-low":"stock-ok"}">${stockText}</span><div class="product-bottom"><div><span class="product-brand">${escapeHtml(p.brand || "")}</span>
+        <strong>${money(price)}</strong>${promo ? `<del>${money(p.old_price)}</del>` : ""}${promo && p.promo_end ? `<small class="promo-until">Hasta ${escapeHtml(p.promo_end)}</small>`:""}</div><span class="view-label">Ver detalle</span></div></div></a>`;
+  }
+function renderFeatured() {
+  const section=document.getElementById("featuredSection");
+  const featured=products.filter(p=>p.is_featured);
+  section.hidden=featured.length===0;
+  document.getElementById("featuredGrid").innerHTML=featured.slice(0,4).map(productCard).join("");
+}
+
 function renderCategories() {
-  const categories = ["Todos", ...(products.some(p=>interestFreeMonths(p)>0)?["Meses sin intereses"]:[]), ...(products.some(isPromoActive)?["Ofertas"]:[]), ...new Set(products.map(p=>p.category).filter(Boolean))];
+  const categories = ["Todos", ...(products.some(p=>p.is_featured)?["Destacados"]:[]), ...(products.some(p=>interestFreeMonths(p)>0)?["Meses sin intereses"]:[]), ...(products.some(isPromoActive)?["Ofertas"]:[]), ...new Set(products.map(p=>p.category).filter(Boolean))];
   const row = document.getElementById("categorias");
   row.innerHTML = categories.map(category =>
     `<button class="category-chip ${activeCategory===category?"active":""}" data-category="${escapeHtml(category)}">${escapeHtml(category)}${category==="Todos"?' <span>✳</span>':""}</button>`
@@ -101,3 +113,9 @@ loadProducts();
 const offersButton=document.getElementById("showOffersButton"); if(offersButton) offersButton.addEventListener("click",()=>{activeCategory="Ofertas"; renderProducts(); document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});});
 
 const msiButton=document.getElementById("showMsiButton"); if(msiButton) msiButton.addEventListener("click",()=>{activeCategory="Meses sin intereses"; renderProducts(); document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});});
+
+const featuredButton=document.getElementById("showFeaturedButton");
+if(featuredButton) featuredButton.addEventListener("click",()=>{
+  activeCategory="Destacados";search.value="";renderProducts();
+  document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});
+});

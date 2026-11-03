@@ -21,6 +21,14 @@
   <section id="dashboard" hidden>
     <div class="admin-topline"><div><div class="admin-kicker">PANEL DE CONTROL</div><h1>Administrar productos<span>.</span></h1><p>Agrega, edita y publica los productos de tu tienda.</p></div><button id="logoutButton" class="outline-button">Cerrar sesión</button></div>
     <div class="admin-stats"><div><span>Productos registrados</span><strong id="productTotal">0</strong></div><div><span>Productos publicados</span><strong id="publishedTotal">0</strong></div></div>
+    <section class="inventory-dashboard" aria-labelledby="inventoryHeading">
+      <div class="inventory-heading"><h2 id="inventoryHeading">Resumen de inventario</h2><p>Productos registrados por estado. Las cantidades exactas solo se ven en Administración.</p></div>
+      <div class="inventory-summary">
+        <div class="inventory-summary-card"><span class="inventory-dot available"></span><span>Disponibles</span><strong id="inventoryAvailable">0</strong></div>
+        <div class="inventory-summary-card"><span class="inventory-dot low"></span><span>Últimas unidades</span><strong id="inventoryLow">0</strong></div>
+        <div class="inventory-summary-card"><span class="inventory-dot out"></span><span>Agotados</span><strong id="inventoryOut">0</strong></div>
+      </div>
+    </section>
     <div class="admin-toolbar"><input type="search" id="adminSearch" placeholder="Buscar en tus productos..."><button class="primary-button" id="newProductButton" type="button">+ Agregar producto</button></div>
     <div class="admin-product-list" id="adminProductList"></div>
     <section class="editor-card" id="editorCard" hidden>
@@ -36,6 +44,7 @@
           <label>Etiqueta (opcional)<input id="productBadge" maxlength="30" placeholder="OFERTA / PROMOCIÓN / NUEVO"></label>
           <label>Inicio de promoción (opcional)<input id="promoStart" type="date"></label>
           <label>Fin de promoción (opcional)<input id="promoEnd" type="date"></label>
+          <label>Unidades disponibles *<input id="productStock" type="number" min="0" max="1000000" step="1" value="0" required><span class="field-hint">0 = Agotado; de 1 a 3 = Últimas unidades; 4 o más = Disponible.</span></label>
           <label>Meses sin intereses<select id="interestFreeMonths"><option value="">No aplicar</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="9">9 meses</option><option value="12">12 meses</option></select></label>
           <label>Inicio meses sin intereses (opcional)<input id="interestFreeStart" type="date"></label>
           <label>Fin meses sin intereses (opcional)<input id="interestFreeEnd" type="date"></label>
@@ -44,6 +53,7 @@
         <label>Características (una por línea)<textarea id="productFeatures" rows="4" placeholder="Pantalla 4K UHD&#10;Conexión Wi-Fi&#10;Garantía"></textarea></label>
         <label>Fotografías del producto <span class="field-hint">Puedes seleccionar varias imágenes. Las imágenes nuevas se añadirán a la galería.</span><input id="productImages" type="file" accept="image/*" multiple></label>
         <div id="currentImages" class="image-preview-row"></div>
+        <label class="publish-toggle"><input id="productFeatured" type="checkbox"> Destacar este producto en la página principal</label>
         <label class="publish-toggle"><input id="productActive" type="checkbox" checked> Publicar este producto en la tienda</label>
         <p class="admin-message" id="saveMessage" role="status"></p>
         <div class="editor-actions"><button class="primary-button" type="submit" id="saveProductButton">Guardar producto <span>→</span></button><button class="outline-button" type="button" id="cancelEditBottom">Cancelar</button></div>

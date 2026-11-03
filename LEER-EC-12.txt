@@ -1,0 +1,8 @@
+ELECTROCREDIT EC-12 — PRODUCTOS DESTACADOS
+
+1. En Supabase > SQL Editor, ejecuta DESTACADOS-EJECUTAR-EN-SUPABASE.sql. Espera Success.
+2. Descomprime este ZIP y publica los archivos en el mismo sitio de Netlify.
+3. En Administración, edita un producto y marca «Destacar este producto en la página principal».
+4. Guarda y revisa la sección Productos destacados y el filtro Destacados en la tienda.
+
+Los productos existentes quedan sin destacar por defecto. No se eliminan datos.

@@ -27,11 +27,14 @@ async function loadProduct() {
   const images = p.images?.length ? p.images : ["https://placehold.co/1000x800/f2f5ef/176b53?text=Electrocredit"];
   const features = p.features || [];
   const promoActive=isPromoActive(p), currentPrice=displayPrice(p), msiMonths=interestFreeMonths(p);
-  const whatsappMessage = ["¡Hola, Electrocredit! Estoy interesado en este producto:",`Producto: ${p.name}`,p.brand ? `Marca: ${p.brand}` : null,`Precio: ${money(currentPrice)}`,`Enlace: ${location.origin}/producto.html?id=${encodeURIComponent(p.id)}`,"¿Me pueden confirmar disponibilidad y opciones de pago?"].filter(Boolean).join("\n");
+  const stock=Number(p.stock_quantity??0);
+  const stockText=stock===0?"Agotado":stock<=3?"Últimas unidades":"Disponible";
+  const whatsappMessage = ["¡Hola, Electrocredit! Estoy interesado en este producto:",`Producto: ${p.name}`,p.brand ? `Marca: ${p.brand}` : null,`Precio: ${money(currentPrice)}`,`Disponibilidad publicada: ${stockText}`,`Enlace: ${location.origin}/producto.html?id=${encodeURIComponent(p.id)}`,"¿Me pueden confirmar disponibilidad y opciones de pago?"].filter(Boolean).join("\n");
   container.innerHTML = `<div class="detail-gallery"><div class="detail-main-image"><img id="mainProductImage" src="${escapeHtml(images[0])}" alt="${escapeHtml(p.name)}"></div>
     <div class="thumbnail-row">${images.map((src,i)=>`<button class="thumbnail ${i===0?"selected":""}" data-image="${escapeHtml(src)}" aria-label="Ver fotografía ${i+1}"><img src="${escapeHtml(src)}" alt=""></button>`).join("")}</div></div>
     <div class="detail-info"><span class="product-category">${escapeHtml(p.category)}</span><p class="detail-brand">${escapeHtml(p.brand || "")}</p>
-    <h1>${escapeHtml(p.name)}</h1><p class="detail-description">${escapeHtml(p.description || "")}</p>
+    <h1>${escapeHtml(p.name)}</h1>${p.is_featured?`<span class="featured-detail-mark">★ PRODUCTO DESTACADO</span>`:""}<p class="detail-description">${escapeHtml(p.description || "")}</p>
+    <p class="stock-label detail-stock ${stock===0?"stock-out":stock<=3?"stock-low":"stock-ok"}">${stockText}</p>
     <div class="detail-price">${money(currentPrice)} ${promoActive?`<del>${money(p.old_price)}</del>`:""}</div>${promoActive?`<p class="promo-detail-note">🔥 Promoción vigente${p.promo_end?` hasta ${escapeHtml(p.promo_end)}`:""}</p>`:""}${msiMonths?`<p class="promo-detail-note">✨ ${msiMonths} MESES SIN INTERESES${p.interest_free_end?` · Hasta ${escapeHtml(p.interest_free_end)}`:""}</p>`:""}
     <p class="price-note">Precio de referencia. Confirma disponibilidad y precio vigente con nuestra tienda.</p>
     <div class="detail-divider"></div><h3>Características principales</h3>
@@ -70,7 +73,7 @@ async function loadProduct() {
     document.getElementById("financeTotal").textContent=money(total);
     document.getElementById("financeInstallmentLabel").textContent=`${label} (${count} pagos)`;
     document.getElementById("financeInstallment").textContent=money(installment);
-    const msg=["¡Hola, Electrocredit! Quiero solicitar información sobre financiamiento:",`Producto: ${p.name}`,p.brand?`Marca: ${p.brand}`:null,`Precio de contado: ${money(price)}`,`Prima inicial: ${money(down)}`,`Plazo: ${months} meses${isInterestFree?" SIN INTERESES":""}`,`Frecuencia: ${freq==="weekly"?"semanal":freq==="biweekly"?"quincenal":"mensual"}`,`Total estimado en cuotas: ${money(total)}`,`Cuota estimada: ${money(installment)} (${count} pagos)`,`Producto: ${location.origin}/producto.html?id=${encodeURIComponent(p.id)}`,"Deseo confirmar requisitos y aprobación."] .filter(Boolean).join("\n");
+    const msg=["¡Hola, Electrocredit! Quiero solicitar información sobre financiamiento:",`Producto: ${p.name}`,p.brand?`Marca: ${p.brand}`:null,`Precio de contado: ${money(price)}`,`Prima inicial: ${money(down)}`,`Plazo: ${months} meses${isInterestFree?" SIN INTERESES":""}`,`Frecuencia: ${freq==="weekly"?"semanal":freq==="biweekly"?"quincenal":"mensual"}`,`Total estimado en cuotas: ${money(total)}`,`Cuota estimada: ${money(installment)} (${count} pagos)`,`Producto: ${location.origin}/producto.html?id=${encodeURIComponent(p.id)}`,`Disponibilidad publicada: ${stockText}`,"Deseo confirmar requisitos y aprobación."] .filter(Boolean).join("\n");
     document.getElementById("financeWhatsapp").href=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
   };
   [downInput,monthsInput,freqInput].forEach(el=>el.addEventListener("input",calculate));
